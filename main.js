@@ -1,3 +1,6 @@
+`strict mode`
+//Better to stay safe as to spend Hours on finding weird Variables
+
 const Discord = require("discord.js");
 const Client = new Discord.Client();
 const token = "DEIN TOKEN"
@@ -8,14 +11,14 @@ const moment = require("moment");
 
 
 Client.on("guildMemberAdd", async member =>{
-    let channel = member.guild.channels.cache.find(ch => ch.id === serverstats[member.guild.id].welcomechannel);
+    const channel = member.guild.channels.cache.find(ch => ch.id === serverstats[member.guild.id].welcomechannel);
     if(!channel || channel.id === "nowelcome") return;
     channel.send(`<:member_join:846729870964949002> <@!${member.id}> is just joining **${member.guild.name}**\n**Welcome!** <a:flyingironman:842294044393996328>\nCurrent Members -> **${member.guild.memberCount}**`);
 
 })
 
 Client.on("guildMemberRemove", async member =>{
-    let channel = member.guild.channels.cache.find(ch => ch.id === serverstats[member.guild.id].leavechannel);
+    const channel = member.guild.channels.cache.find(ch => ch.id === serverstats[member.guild.id].leavechannel);
     if(!channel || channel.id === "noleave") return;
     channel.send(`<:RedArrow:846744117844377600> **${member.user.username}** are left **${member.guild.name}**\n**Goodbye!** <a:flyingironman:842294044393996328>\nCurrent Members -> **${member.guild.memberCount}**`);
 
@@ -65,8 +68,8 @@ Client.on("message", async message =>{
         })
     }
 
-    if(message.content.startsWith(prefix+"setprefix")){
-        let newprefix = message.content.split(" ").slice(1).join("");
+    else if(message.content.startsWith(prefix+"setprefix")){
+        const newprefix = message.content.split(" ").slice(1).join("");
 
         if(!message.member.hasPermission("ADMINISTRATOR")) return message.reply("You need **ADMINISTRATPR** rights.");
 
@@ -83,34 +86,34 @@ Client.on("message", async message =>{
 
      // Set Global 
 
-    if(message.content.startsWith(prefix+"setglobal")){
-        let channel = message.mentions.channels.first();
-        if(!channel) return message.channel.send("Du hast keinen Kanal aneggeben.").then(msg=>msg.delete({timeout:"5000"}));
+    else if(message.content.startsWith(prefix+"setglobal")){
+        const channel = message.mentions.channels.first();
+        if(channel === undefined) return message.channel.send("Du hast keinen Kanal aneggeben.").then(msg=>msg.delete({timeout:"5000"}));
         if(!message.member.hasPermission("MANAGE_CHANNELS")) return message.channel.send("Du hast keien Rechte dafür.").then(msg=>msg.delete({timeout:"5000"}));
-        if(!serverstats[message.guild.id].globalchat){
+        if(serverstats[message.guild.id].globalchat === undefined){
             serverstats[message.guild.id].globalchat = "noID"
         }
         serverstats[message.guild.id].globalchat = channel.id;
         message.channel.send("Der Globalchat ist nun <#"+channel.id+">.").then(msg=>msg.delete({timeout:"8000"}));
     }
 
-    if(message.content.startsWith(prefix+"delglobal")){
+    else if(message.content === prefix+"delglobal"){
         if(!message.member.hasPermission("MANAGE_CHANNELS")) return message.channel.send("Du hast keien Rechte dafür.").then(msg=>msg.delete({timeout:"5000"}));
-        if(!serverstats[message.guild.id].globalchat){
+        if(serverstats[message.guild.id].globalchat === undefined){
             serverstats[message.guild.id].globalchat = "noID"
         }
         serverstats[message.guild.id].globalchat = "noID";
         message.channel.send("Der Globalchat wurde geunsetupped.").then(msg=>msg.delete({timeout:"8000"}));
     }
 
-    if(message.channel.id === serverstats[message.guild.id].globalchat && !message.content.startsWith(prefix) && !message.author.bot){
+    else if(message.channel.id === serverstats[message.guild.id].globalchat && !message.content.startsWith(prefix) && !message.author.bot){
         Client.guilds.cache.forEach(guild=>{
       if(serverstats[guild.id] !== undefined){
           if(serverstats[guild.id].globalchat){
             if(serverstats[guild.id].globalchat != "noID"){
               if(guild.channels.cache.get(serverstats[guild.id].globalchat)){     
 
-        let normalembed = new Discord.MessageEmbed()
+        const normalembed = new Discord.MessageEmbed()
         .setThumbnail(message.author.displayAvatarURL({dynamic: true}))
         .setAuthor("People")
         .setTitle(message.author.tag)
@@ -120,7 +123,7 @@ Client.on("message", async message =>{
         .addField("*Link ->*",`[Bot Invite](https://discord.com/api/oauth2/authorize?client_id=813498240477560834&permissions=8&scope=bot) | [Support](https://discord.gg/rys9xBgF3q)`)
         
 
-        let ownerembed = new Discord.MessageEmbed()
+        const ownerembed = new Discord.MessageEmbed()
         .setThumbnail(message.author.displayAvatarURL({dynamic: true}))
         .setAuthor("Bot-Leitung")
         .setTitle("<a:krone:856254172432171039> "+message.author.tag)
@@ -129,8 +132,9 @@ Client.on("message", async message =>{
         .setFooter(`${message.guild.name} | ${message.guild.id} - ${message.id}`, message.guild.iconURL({dynamic: true}))
         .addField("*Link ->*",`[Bot Invite](https://discord.com/api/oauth2/authorize?client_id=813498240477560834&permissions=8&scope=bot) | [Support](https://discord.gg/rys9xBgF3q) | [Server Invite](https://discord.gg/rys9xBgF3q)`)
 
-
-        let adminembed = new Discord.MessageEmbed()
+        
+        //gönn Grün XD
+        const adminembed = new Discord.MessageEmbed()
         .setThumbnail(message.author.displayAvatarURL({dynamic: true}))
         .setAuthor("Admin")
         .setTitle("<:support_badge:856254638608613436> "+message.author.tag)
@@ -139,6 +143,8 @@ Client.on("message", async message =>{
         .setFooter(`${message.guild.name} | ${message.guild.id} - ${message.id}`, message.guild.iconURL({dynamic: true}))
         .addField("*Link ->*",`[Bot Invite](https://discord.com/api/oauth2/authorize?client_id=813498240477560834&permissions=8&scope=bot) | [Support](https://discord.gg/rys9xBgF3q)`)
 
+        
+        //Finde jetzt nicht das es so besser zu lesen ist als mit else if aber ist nicht wirklich worth zu optimieren
         if(message.author.id === "679001378500247554"){
             guild.channels.cache.get(serverstats[guild.id].globalchat).send(ownerembed);
 
@@ -162,7 +168,7 @@ Client.on("message", async message =>{
             
 
         }
-
+        //Warum ist es hier so leer? War hier mal was und du hast es entfernt?
 
         
             
@@ -197,14 +203,15 @@ Client.on("message", async message =>{
       
 
         })
+        //what?
         message.delete()
       }
 
      
-      if(message.content.startsWith(prefix+"userinfo")){
+      else if(message.content.startsWith(prefix+"userinfo")){
 
-        let user = message.mentions.members.first() || message.member;
-        var status = user.presence.status;
+        const user = message.mentions.members.first() || message.member;
+        let status = user.presence.status;
 
         
         
@@ -225,8 +232,9 @@ Client.on("message", async message =>{
         .slice(0, -1)
 
         let displayroles;
-
-        if(roles.length < 1){
+          
+        //array.length are never negative
+        if(roles.length === 0){
             displayroles = "No Roles"
         }else{
             if(roles.length < 20) {
@@ -240,11 +248,11 @@ Client.on("message", async message =>{
         let displayflags;
         
 
-        if(userflags.length < 1){
+        if(userflags.length === 0){
             displayflags = "No Flags"
         }else{
-            if(userflags.length > 1) {
-                displayflags= userflags.join(' ')
+            if(userflags.length >= 1) {
+                displayflags = userflags.join(' ')
             } 
 
         }
@@ -254,7 +262,7 @@ Client.on("message", async message =>{
         
 
         
-        let userinfoembed = new Discord.MessageEmbed()
+        const userinfoembed = new Discord.MessageEmbed()
         .setThumbnail(user.user.displayAvatarURL({dynamic: true}))
         .setTitle(`<a:flyingironman:842294044393996328> The Avengers UserInfo Desk`)
         .setDescription(`<:verify_bot:856172918928965632> Bot-Prefix: **${prefix}**`)
@@ -287,7 +295,7 @@ Client.on("message", async message =>{
 
         let displayroles;
 
-        if(roles.length < 1){
+        if(roles.length === 0){
             displayroles = "No Roles"
         }else{
             if(roles.length < 20) {
@@ -298,7 +306,7 @@ Client.on("message", async message =>{
 
         }
     
-            let server = {
+            const server = {
                 logo: message.guild.iconURL({dynamic: true}),
                 name: message.guild.name,
                 createdAt: message.guild.createdAt,
@@ -313,7 +321,7 @@ Client.on("message", async message =>{
             const channels = message.guild.channels.cache;
             const emojis = message.guild.emojis.cache;
     
-            let embed = new Discord.MessageEmbed()
+            const embed = new Discord.MessageEmbed()
             .setTitle(`<a:flyingironman:842294044393996328> The Avengers ServerInfo Desk`)
             .setDescription(`<:verify_bot:856172918928965632> Bot-Prefix: **${prefix}**`)
             .setFooter(`${message.guild.name} | ${message.guild.id} | ${message.id}`, message.guild.iconURL({dynamic: true}))
@@ -355,7 +363,7 @@ Client.on("message", async message =>{
             serverstats[message.guild.id].welcomechannel = "nowelcome"
         }
 
-        let newcwelcome = message.mentions.channels.first();
+        const newcwelcome = message.mentions.channels.first();
 
         if(!newcwelcome) return message.reply("Du hast keinen Kanal angegeben!").then(msg=>msg.delete({timeout:"5000"}));
     
@@ -373,11 +381,11 @@ Client.on("message", async message =>{
     if(message.content.startsWith(prefix+"setleave")){
         if(!message.member.hasPermission("ADMINISTRATOR")) return message.reply("You need **ADMINISTRATPR** rights.");
 
-        if(!serverstats[message.guild.id].leavechannel){
+        if(serverstats[message.guild.id].leavechannel === undefined){
             serverstats[message.guild.id].leavechannel = "noleave"
         }
 
-        let newleave = message.mentions.channels.first();
+        const newleave = message.mentions.channels.first();
 
         if(!newleave) return message.reply("Du hast keinen Kanal angegeben!").then(msg=>msg.delete({timeout:"5000"}));
     
@@ -412,19 +420,19 @@ Client.on("message", async message =>{
     }
 
     if(message.content.startsWith(prefix+"kick")){
-        let user = message.mentions.users.first();
-        let grund = message.content.split(" ").slice(2).join(" ");
+        const user = message.mentions.users.first();
+        const reason = message.content.split(" ").slice(2).join(" ");
         if(message.author == user) return message.reply("**TF..?** you can't kick yourself")
         if(!message.member.hasPermission("KICK_MEMBERS")) return message.reply("You need **KICK_MEMBERS** rights.");
 
-        if(!user) return message.channel.send("Mention a User!")
+        if(user === undefined) return message.channel.send("Mention a User!")
        
     
-        if(!grund) grund = "No Reason given"
+        if(reason === undefined) reason = "No Reason given"
 
         if(message.guild.member(user).kickable == true){
-            message.channel.send(`<@!${user.id}> was kicked by <@!${message.author.id}>, at **${message.guild.name}**\n**Reason** -> ${grund} <a:flyingironman:842294044393996328>`)
-            message.guild.member(user).kick(grund)
+            message.channel.send(`<@!${user.id}> was kicked by <@!${message.author.id}>, at **${message.guild.name}**\n**Reason** -> ${reason} <a:flyingironman:842294044393996328>`)
+            message.guild.member(user).kick(reason)
         }
         if(message.guild.member(user).kickable == false){
             message.channel.send(`I can't kick <@!${user.id}>, he has **more premission** then I. <a:flyingironman:842294044393996328>`)
@@ -451,39 +459,33 @@ Client.on("message", async message =>{
             message.channel.send(`I can't ban <@!${user.id}>, he has **more premission** then I. <a:flyingironman:842294044393996328>`)
         }
 
-    }*/
-
+    }
+    */
     
-        
-
-    
-
-
-
     // Warn System
     if(message.content.startsWith(prefix+"warn")){
-        let user = message.mentions.users.first();
-        let grund = message.content.split(" ").slice(2).join(" ");
+        const user = message.mentions.users.first();
+        const reason = message.content.split(" ").slice(2).join(" ");
         if(message.author == user) return message.reply("**TF..?** you can't warn yourself")
         if(!message.member.hasPermission("KICK_MEMBERS")) return message.reply("You need **KICK_MEMBERS** rights.");
 
-        if(!user) return message.channel.send("Mention a User!")
+        if(user === undefined) return message.channel.send("Mention a User!")
        
     
-        if(!grund) grund = "No Reason given"
+        if(reason === undefined) reason = "No Reason given"
 
 
 
-        let embed = new Discord.MessageEmbed()
+        const embed = new Discord.MessageEmbed()
         .setTitle("WARN!")
-        .setDescription(`**Attention** <@!${user.id}>, you've been **warned** <a:flyingironman:842294044393996328>!\n**Reason** -> ${grund}`)
+        .setDescription(`**Attention** <@!${user.id}>, you've been **warned** <a:flyingironman:842294044393996328>!\n**Reason** -> ${reason}`)
         .setThumbnail(user.displayAvatarURL({dynamic: true}))
         .setFooter(`${message.guild.name} | ${message.guild.id} | ${message.id}`, message.guild.iconURL({dynamic: true}))
         .setColor("GOLD")
 
         message.channel.send(embed)
 
-        if(!warnFile[user.id+message.guild.id]){
+        if(warnFile[user.id+message.guild.id] === undefined){
             warnFile[user.id+message.guild.id] = {
                 warns:0,
                 maxwarn:3
@@ -491,8 +493,8 @@ Client.on("message", async message =>{
         }
     
         warnFile[user.id+message.guild.id].warns += 1
-
-        if(warnFile[user.id+message.guild.id].warns > warnFile[user.id+message.guild.id].maxwarn){
+        
+        if(warnFile[user.id+message.guild.id].warns >= warnFile[user.id+message.guild.id].maxwarn){
             if(message.guild.member(user).kickable == true){
                 message.channel.send(`<@!${user.id}> was kicked beacause of **4 Warns**! <a:flyingironman:842294044393996328>`)
                 message.guild.member(user).kick(grund)
@@ -510,10 +512,10 @@ Client.on("message", async message =>{
     
 
     if(message.content.startsWith(prefix+"nowwarn")){
-        let user = message.mentions.users.first();
+        const user = message.mentions.users.first();
         if(!message.member.hasPermission("KICK_MEMBERS")) return message.reply("You need **KICK_MEMBERS** rights.");
 
-        if(!user) return message.channel.send("Mention a User!")
+        if(user === undefined) return message.channel.send("Mention a User!")
 
         message.channel.send(`<@!${user.id}> has  **${warnFile[user.id+message.guild.id].warns}** warns, at **${message.guild.name}** ! <a:flyingironman:842294044393996328>`)
 
@@ -528,9 +530,9 @@ Client.on("message", async message =>{
       const args = message.content.split(' ').slice(1); 
       const amount = args.join(' '); 
         
-       if (!amount) return message.channel.send(' :x: You havent given an amount of messages which should be deleted!'); 
-       if (isNaN(amount)) return message.channel.send(' :x: The amount parameter isnt a number!'); 
-       if (amount > 100) return message.channel.send(' :x: You cant delete more than 100 messages at once!');
+       if (!amount) return message.channel.send(" :x: You havn't given an amount of messages which should be deleted!"); 
+       if (isNaN(amount)) return message.channel.send(" :x: The amount parameter isn't a number!"); 
+       if (amount > 100) return message.channel.send(" :x: You can't delete more than 100 messages at once!");
        if (amount < 1) return message.channel.send(':x: You have to delete at least 1 message!');
                 
        message.channel.messages.fetch({ limit: amount }).then(messages => { 
@@ -539,12 +541,6 @@ Client.on("message", async message =>{
        message.channel.send("Deleting Messages... <a:Loading:800341232870096938> ").then(msg=>{
        msg.edit(`Deleted **${amount}** messages, at **${msg.guild.name}** <a:flyingironman:842294044393996328>`)
     })
-
-    
-    
-    
-    
-
 }
          
 
@@ -571,34 +567,21 @@ Client.on("message", async message =>{
 
     if(message.content.startsWith(prefix+"ping")){
         message.channel.send("<a:Loading:800341232870096938> Pinging...").then(resultmessage=>{
-            var ping = resultmessage.createdTimestamp - message.createdTimestamp
+            const ping = resultmessage.createdTimestamp - message.createdTimestamp
 
-            
-            
+            const pingembed = new Discord.MessageEmbed()
+            .setThumbnail(message.guild.iconURL({dynamic: true}))
+            .setTitle(`The Avengers Ping Desk`)
+            .setDescription(`<:verify_bot:856172918928965632> Bot-Prefix: **${prefix}**`)
+            .setColor("GOLD")
+            .setFooter(`${message.guild.name} | ${message.guild.id} | ${message.id}`, message.guild.iconURL({dynamic: true}))
+            .addField("**"+message.guild.name+"** Latency is **"+ping+"** ms.\n**API** Latency is **"+Client.ws.ping+"** ms.","Note: ``Good!`` <a:flyingironman:842294044393996328>")
 
-        let pingembed = new Discord.MessageEmbed()
-        .setThumbnail(message.guild.iconURL({dynamic: true}))
-        .setTitle(`The Avengers Ping Desk`)
-        .setDescription(`<:verify_bot:856172918928965632> Bot-Prefix: **${prefix}**`)
-        .setColor("GOLD")
-        .setFooter(`${message.guild.name} | ${message.guild.id} | ${message.id}`, message.guild.iconURL({dynamic: true}))
-        .addField("**"+message.guild.name+"** Latency is **"+ping+"** ms.\n**API** Latency is **"+Client.ws.ping+"** ms.","Note: ``Good!`` <a:flyingironman:842294044393996328>")
 
-        
 
-        message.channel.send(pingembed)
+            message.channel.send(pingembed)
         })
     }
-
-
-
-
-
-
-
-
-
-
 })
 
 
@@ -606,7 +589,7 @@ Client.on("message", async message =>{
 Client.on("ready", () =>{
     console.log(`ONLINE!`);
 
-    let statuse = [
+    const statuse = [
       "a!help | "+Client.guilds.cache.size+" servers",
       `nowprefix?`,
       "with John Walker😏"
@@ -617,12 +600,13 @@ Client.on("ready", () =>{
       Client.user.setActivity(statuse[statuse.length]);
   
       setInterval(()=>{
-          let rstatus = statuse[number];
+          const rstatus = statuse[number];
   
           Client.user.setActivity(rstatus, {
             type: "PLAYING"
             });
-          number++;
+          //memory management: number++ speichert noch den alten Wert, ++number nicht
+          ++number;
        if(number >= statuse.length){
        number = 0;
      }
