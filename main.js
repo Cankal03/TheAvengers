@@ -2,13 +2,13 @@ const Discord = require("discord.js");
 const Client = new Discord.Client();
 require('discord-buttons')(Client);
 const { MessageButton, MessageActionRow } = require("discord-buttons")
-const token = "DEin Token"
+const token = "12345678910"
 const fs = require("fs")
 const warnFile = require("./warns.json");
 const serverstats = require("./servers.json");
 const enmap = require("enmap");
 const moment = require("moment");
-const { error } = require("console");
+const { error, time } = require("console");
 
 const settings = new enmap({
     name: "settings",
@@ -21,14 +21,15 @@ const settings = new enmap({
 
 Client.on("guildMemberAdd", async member =>{
     let channel = member.guild.channels.cache.find(ch => ch.id === serverstats[member.guild.id].welcomechannel);
-    if(!channel || channel.id === "nowelcome") return;
-    channel.send(`<:member_join:846729870964949002> <@!${member.id}> ${serverstats[member.guild.id].welcomemsg}\nCurrent Members -> **${member.guild.memberCount}** <a:flyingironman:842294044393996328> `);
+    if(!channel || channel.id === undefined) return;
+    if(!serverstats[member.guild.id].welcomemsg) return;
+    channel.send(`<:member_join:846729870964949002> <@!${member.id}> ${serverstats[member.guild.id].welcomemsg}\nCurrent Members -> **${member.guild.memberCount}** <a:flyingironman:842294044393996328>`);
 
 })
 
 Client.on("guildMemberRemove", async member =>{
     let channel = member.guild.channels.cache.find(ch => ch.id === serverstats[member.guild.id].leavechannel);
-    if(!channel || channel.id === "noleave") return;
+    if(!channel || channel.id === undefined) return;
     channel.send(`<:RedArrow:846744117844377600> **${member.user.username}** are left **${member.guild.name}**\n**Goodbye!** <a:flyingironman:842294044393996328>\nCurrent Members -> **${member.guild.memberCount}**`);
 
 })
@@ -77,9 +78,30 @@ Client.on("message", async message =>{
 
     if(message.content.toLowerCase() === `close`){
         if(!message.channel.name.includes("ticket-")) return
-        
 
-            message.channel.send("*Are you sure you want to close that ticket?*\n[yes] = ✅ [no] = ❌\n<a:missminuteshello:857915185087905802> **[15 secounds]**").then(msg=>{
+
+        let closeembed = new Discord.MessageEmbed()
+        .setAuthor(message.author.tag)
+        .setTitle("Close ticket machine")
+        .setColor("RED")
+        .setDescription(`*Are you sure you want to close that ticket?*`)
+        .setThumbnail(message.author.displayAvatarURL({dynamic:true, size: 1024}))
+        .setFooter(`${message.guild.name} | ${message.guild.id}`, message.guild.iconURL({dynamic: true}))
+        .addField(`[yes] = ✅ [no] = ❌\n<a:missminuteshello:857915185087905802> **[15 seconds]**`,`[Bot Invite](https://discord.com/api/oauth2/authorize?client_id=813498240477560834&permissions=8&scope=bot) | [Support](https://discord.gg/rys9xBgF3q)`)
+
+        let yescloseembed = new Discord.MessageEmbed()
+        .setDescription("Deleting the channel")
+        .setColor("RED")
+
+        let nocloseembed = new Discord.MessageEmbed()
+        .setDescription(`**The process successfully aborted**\n*Anyone can take a prescription:)* <a:flyingironman:842294044393996328>`)
+        .setColor("GREEN")
+
+        let filtererrorembed = new Discord.MessageEmbed()
+        .setDescription(`<a:missminuteshello:857915185087905802> The time is up **[15 seconds]**`)
+        .setColor("GREEN")
+        
+            message.channel.send(closeembed).then(msg=>{
     
                 msg.react("✅").then(()=>{
                     msg.react("❌");
@@ -93,31 +115,24 @@ Client.on("message", async message =>{
                     const reaction = collected.first();
     
                     switch(reaction.emoji.name){
-                        case "✅": message.channel.send("Deleting channel...").then(()=>{
+                        case "✅": message.channel.send(yescloseembed).then(()=>{
                             message.channel.delete()
                         })
                                 reaction.users.remove(message.author);
                             break;
-                        case "❌": message.channel.send("**The process successfully aborted**\n*Anyone can take a prescription:)* <a:flyingironman:842294044393996328>");
+                        case "❌": message.channel.send(nocloseembed);
                             reaction.users.remove(message.author);
                             break;
                     }
     
                 }).catch(err=>{
-                    if(err) message.channel.send("<a:missminuteshello:857915185087905802> The time is up **[15 secounds]**").then(()=>{
+                    if(err) message.channel.send(filtererrorembed).then(()=>{
                         message.delete({timeout: 5000})
                     })
                 })
     
             })
-    
-        
-            
-       
-
-        
-            
-        
+     
     }
 
     if(message.content.startsWith(prefix+"setprefix")){
@@ -138,7 +153,7 @@ Client.on("message", async message =>{
 
     if(message.content.startsWith(prefix+"setticket")){
         let channel = message.mentions.channels.first();
-        if(!message.member.hasPermission("ADMINISTRATOR")) return message.reply("You need **ADMINISTRATOR** premissions.")
+        if(!message.member.hasPermission("MANAGE_CHANNELS")) return message.reply("You need **MANAGE_CHANNELS** premissions.")
         if(!channel) return message.reply("Usage: ``setticket <#channel>``");
 
         let sent = await channel.send(new Discord.MessageEmbed()
@@ -615,7 +630,7 @@ message.channel.send('Hey, i am **'+Client.user.tag+"** support me and invite me
     }
 
     if(message.content.startsWith(prefix+"setsuprole")){
-        if(!message.member.hasPermission("ADMINISTRATOR")) return message.reply("You need **ADMINISTRATPR** rights.");
+        if(!message.member.hasPermission("MANAGE_CHANNELS")) return message.reply("You need **MANAGE CHANNELS** rights.");
 
         if(!serverstats[message.guild.id].suprole){
             serverstats[message.guild.id].suprole = undefined
@@ -911,7 +926,7 @@ if(message.content.toLowerCase() === `${prefix}help`){
         .setFooter(`${message.guild.name}`, message.guild.iconURL({dynamic: true}))
         .addField("Example","``"+prefix+"setticket <#channel>``",true)
         .addField("> __Marvel__ [1]", "*whoavenger*")
-        .addField("> __Module__ [12]", "*setticket,setsuprole*\n*setwelcome,setleave,setwelcmsg*,delwelcome,delleave*\n*warn,nowwarn,delwarn*\n*clear,kick,~~ban~~*")
+        .addField("> __Module__ [12]", "*setticket,setsuprole*\n**-> Set the ticket system, *<setsuprole>* see the Ticket channel and ping it there.**\n*setwelcome,setleave,setwelcmsg,delwelcome,delleave*\n**-> Set *welcome/leave* channel**\n*warn,nowwarn,delwarn*\n*clear,kick,~~ban~~*\n**-> Moderate your server**")
         .addField("> __Main__ [6]", "*serverinfo,userinfo,avatar*\n*howgay,howsimp,react*")
         .addField("> __Logs__ [4]", "*nowprefix?,setprefix,ping,invite*")
         .addField("> __Corona__ [5]", "*covidwho,~~covidinz,covidneu,covidrwer~~*")
@@ -919,9 +934,7 @@ if(message.content.toLowerCase() === `${prefix}help`){
         .addField(`Helpful URL's`,`[Bot-Invite](https://discord.com/api/oauth2/authorize?client_id=813498240477560834&permissions=8&scope=bot) | [Support-Server](https://discord.gg/rys9xBgF3q)`)
 
 
-        message.channel.send(`I hope I’m helping you...`, helpembed).then(msg=>{
-            msg.channel.send("<a:Loading:800341232870096938> **Important Infortmation**\nThe bot owner has to ``re-establish`` me, based on a data loss...\n**John Walker#1234** takes the trouble to bring me back to **Version 1.6** as soon as possible.")
-        })
+        message.channel.send(`**I hope I’m *helping* you...** <a:flyingironman:842294044393996328>`, helpembed)
 
     }
     if(message.content.startsWith(prefix+"covidwho")){
@@ -949,7 +962,7 @@ if(message.content.toLowerCase() === `${prefix}help`){
 
         let pingembed = new Discord.MessageEmbed()
         .setThumbnail(Client.user.displayAvatarURL({dynamic: true}))
-        .setTitle(`The Avengers Ping Desk`)
+        .setTitle(`Ping Desk`)
         .setDescription(`<:verify_bot:856172918928965632> Bot-Prefix: **${prefix}**`)
         .setColor("5865f2")
         .setFooter(`${message.guild.name} | ${message.guild.id} | ${message.id}`, message.guild.iconURL({dynamic: true}))
@@ -1001,6 +1014,9 @@ Client.on("guildCreate", (guild) =>{
 
 
 
+
+
+
 Client.on("messageReactionAdd", async (reaction, user)=>{
 
     serverstats[reaction.message.guild.id].suprole
@@ -1030,10 +1046,21 @@ Client.on("messageReactionAdd", async (reaction, user)=>{
                 }
                    
             ]);
+            let welcticket = new Discord.MessageEmbed()
+            .setAuthor(user.tag)
+            .setTitle("Ticket machine")
+            .setColor("5865f2")
+            .setDescription(`${Client.user.tag} **has *sucessfully* created a ticket!**`)
+            .setThumbnail(user.displayAvatarURL({dynamic:true, size: 1024}))
+            .setFooter(`${reaction.message.guild.name} | ${reaction.message.guild.id}`, reaction.message.guild.iconURL({dynamic: true}))
+            .addField(`> Type *close* __to delete the channel__`,`[Bot Invite](https://discord.com/api/oauth2/authorize?client_id=813498240477560834&permissions=8&scope=bot) | [Support](https://discord.gg/rys9xBgF3q)`)
+            
+            
 
-            ch.send(`<@&${serverstats[reaction.message.guild.id].suprole}>\n**<@!${user.id}> you can describe our problem here!**\n> Type *close* __to delete the channel__`);
+            ch.send(`<@&${serverstats[reaction.message.guild.id].suprole}>\n**<@!${user.id}> you can describe our problem here!**`, welcticket);
         }).catch(err=>{
-            if(err) return message.channel.send("An error happend "+err);
+            if(err) return reaction.message.channel.send("An error happend "+err);
+            reaction.message.guild.channels.cache.delete(ct=>ct.name === "tickets" && ct.type === "category")
         }) 
     }
 
