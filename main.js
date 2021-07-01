@@ -129,7 +129,8 @@ Client.on("message", async message =>{
                     if(err) message.channel.send(filtererrorembed).then(()=>{
                         message.delete({timeout: 5000})
                     })
-                })
+                }).then(.message.guild.channels.delete("tickets", {type:"category"})
+
     
             })
      
@@ -1027,6 +1028,9 @@ Client.on("messageReactionAdd", async (reaction, user)=>{
         let category = reaction.message.guild.channels.cache.find(ct=>ct.name === "tickets" && ct.type === "category");
 
         if(!category) await reaction.message.guild.channels.create("tickets", {type:"category"}).then(cat=>category = cat);
+        
+        if(reaction.message.guild.channels.cache.find(`ticket-${user.username}`)) return reaction.message.reply("You can only create one ticket in a same guild!")
+
 
 
         reaction.message.guild.channels.create(`ticket-${user.username}`,{type:"text"}).then(ch=>{
@@ -1061,7 +1065,7 @@ Client.on("messageReactionAdd", async (reaction, user)=>{
         }).catch(err=>{
             if(err) return reaction.message.channel.send("An error happend "+err);
             reaction.message.guild.channels.cache.delete(ct=>ct.name === "tickets" && ct.type === "category")
-        }) 
+        })
     }
 
 });
