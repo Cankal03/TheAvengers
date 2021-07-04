@@ -2,7 +2,7 @@ const Discord = require("discord.js");
 const Client = new Discord.Client();
 require('discord-buttons')(Client);
 const { MessageButton, MessageActionRow } = require("discord-buttons")
-const token = "ODEzNDk4MjQwNDc3NTYwODM0.YDQLRg.IB7_xKECvWm8drqdndfSjNgVWG4"
+const token = "DEIN TOKEN"
 const fs = require("fs")
 const warnFile = require("./warns.json");
 const serverstats = require("./servers.json");
