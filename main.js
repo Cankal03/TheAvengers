@@ -2,13 +2,14 @@ const Discord = require("discord.js");
 const Client = new Discord.Client();
 require('discord-buttons')(Client);
 const { MessageButton, MessageActionRow } = require("discord-buttons")
-const token = "12345678910"
+const token = "ODEzNDk4MjQwNDc3NTYwODM0.YDQLRg.IB7_xKECvWm8drqdndfSjNgVWG4"
 const fs = require("fs")
 const warnFile = require("./warns.json");
 const serverstats = require("./servers.json");
 const enmap = require("enmap");
 const moment = require("moment");
 const { error, time } = require("console");
+const { type } = require("os");
 
 const settings = new enmap({
     name: "settings",
@@ -95,11 +96,11 @@ Client.on("message", async message =>{
 
         let nocloseembed = new Discord.MessageEmbed()
         .setDescription(`**The process successfully aborted**\n*Anyone can take a prescription:)* <a:flyingironman:842294044393996328>`)
-        .setColor("GREEN")
+        .setColor("FEE75C")
 
         let filtererrorembed = new Discord.MessageEmbed()
         .setDescription(`<a:missminuteshello:857915185087905802> The time is up **[15 seconds]**`)
-        .setColor("GREEN")
+        .setColor("FEE75C")
         
             message.channel.send(closeembed).then(msg=>{
     
@@ -129,8 +130,7 @@ Client.on("message", async message =>{
                     if(err) message.channel.send(filtererrorembed).then(()=>{
                         message.delete({timeout: 5000})
                     })
-                }).then(.message.guild.channels.delete("tickets", {type:"category"})
-
+                })
     
             })
      
@@ -160,8 +160,8 @@ Client.on("message", async message =>{
         let sent = await channel.send(new Discord.MessageEmbed()
         .setTitle("Ticket")
         .setDescription("To ``create`` a ticket react with 🎫")
-        .setFooter(`${Client.user.tag} | Version 1.1 `, Client.user.displayAvatarURL({dynamic: true}))
-        .setColor("5865f2")
+        .setFooter(`${message.guild.name} | Ticket-System `, message.guild.iconURL({dynamic: true}))
+        .setColor("FEE75C")
         );
 
         sent.react("🎫")
@@ -172,9 +172,10 @@ Client.on("message", async message =>{
     }
 
 if(message.content.toLowerCase() === `${prefix}invite`){
+
 let button = new MessageButton()
   .setStyle('red') 
-  .setLabel(`The Avengers#0919 | Vers. 1.11 | ${Client.guilds.cache.size} servers!`) 
+  .setLabel(`The Avengers#0919 | Vers. 1.2 | ${Client.guilds.cache.size} servers!`) 
   .setID('red')
   .setEmoji("798602709371977759") 
 
@@ -208,7 +209,14 @@ message.channel.send('Hey, i am **'+Client.user.tag+"** support me and invite me
             serverstats[message.guild.id].globalchat = undefined
         }
         serverstats[message.guild.id].globalchat = channel.id;
-        message.channel.send("Der Globalchat ist nun <#"+channel.id+">.").then(msg=>msg.delete({timeout:"8000"}));
+        
+        message.channel.send("**Updatet the *global* channel to <#"+channel.id+">.** ")
+        
+        let unlockedembed = new Discord.MessageEmbed()
+        .setColor("FEE75C")
+        .setDescription("**The Global chat is now *unlocked*, have fun!**\n*Please read the rules in the channel topic* <a:flyingironman:842294044393996328>")
+        channel.send(unlockedembed)
+        channel.setTopic("┖─ 〡<:TA_A1Resamble:798602709371977759> The Avengers global [Beta]  〡─┒\nGerman and English Server\n> You like Marvel?\nBe it Comic or Films, then come in!\nOf curse, everyone else is welcome too.\nWhat we offer :\n<:support_badge:856254638608613436> ┃ Own Discord Bot\n<a:chat:846468463550660649> ┃A clean layout\n<a:tonylike:822953023025971271> ┃A level system with Features\n<:Loki:828557265111482377> ┃ Yearly Events\n<a:S1_WV:842291947920949259> ┃ Marvel News\n<a:missminuteshello:857915185087905802> ┃ Exclusive Marvel Emotes\nRules[3]\n  (BETA)\n->  Join now  https://discord.gg/rys9xBgF3q")
     }
 
     if(message.content.startsWith(prefix+"delglobal")){
@@ -217,7 +225,7 @@ message.channel.send('Hey, i am **'+Client.user.tag+"** support me and invite me
             serverstats[message.guild.id].globalchat = undefined
         }
         serverstats[message.guild.id].globalchat = "noID";
-        message.channel.send("Der Globalchat wurde geunsetupped.").then(msg=>msg.delete({timeout:"8000"}));
+        message.channel.send("**Deleted the **global** channel from this guild.** ")
     }
 
     if(message.channel.id === serverstats[message.guild.id].globalchat && !message.content.startsWith(prefix) && !message.author.bot){
@@ -230,23 +238,23 @@ message.channel.send('Hey, i am **'+Client.user.tag+"** support me and invite me
         let normalembed = new Discord.MessageEmbed()
         .setThumbnail(message.author.displayAvatarURL({dynamic: true}))
         .setTitle("People")
-        .setDescription("-> "+message.author.tag)
+        .setColor("EB459E")
+        .setDescription(`**${message.author.tag}**`)
         .setFooter(`${message.guild.name} | ${message.guild.id} - ${message.id}`, message.guild.iconURL({dynamic: true}))
         .addField(`${message.content}`,`[Bot Invite](https://discord.com/api/oauth2/authorize?client_id=813498240477560834&permissions=8&scope=bot) | [Support](https://discord.gg/rys9xBgF3q)`)
-        
 
         let ownerembed = new Discord.MessageEmbed()
         .setThumbnail(message.author.displayAvatarURL({dynamic: true}))
         .setTitle("Bot-Leitung")
-        .setDescription("-> "+message.author.tag)
-        .setColor("5865f2")
+        .setDescription(`**${message.author.tag}**`)
+        .setColor("FEE75C")
         .setFooter(`${message.guild.name} | ${message.guild.id} - ${message.id}`, message.guild.iconURL({dynamic: true}))
         .addField(`${message.content}`,`[Bot Invite](https://discord.com/api/oauth2/authorize?client_id=813498240477560834&permissions=8&scope=bot) | [Support](https://discord.gg/rys9xBgF3q) | [Server Invite](https://discord.gg/rys9xBgF3q)`)
 
         let supportembed = new Discord.MessageEmbed()
         .setThumbnail(message.author.displayAvatarURL({dynamic: true}))
         .setTitle("Support-Server")
-        .setDescription("-> "+message.author.tag)
+        .setDescription(`**${message.author.tag}**`)
         .setColor("GREEN")
         .setFooter(`${message.guild.name} | ${message.guild.id} - ${message.id}`, message.guild.iconURL({dynamic: true}))
         .addField(`${message.content}`,`[Bot Invite](https://discord.com/api/oauth2/authorize?client_id=813498240477560834&permissions=8&scope=bot) | [Support](https://discord.gg/rys9xBgF3q)`)
@@ -255,7 +263,7 @@ message.channel.send('Hey, i am **'+Client.user.tag+"** support me and invite me
         let adminembed = new Discord.MessageEmbed()
         .setThumbnail(message.author.displayAvatarURL({dynamic: true}))
         .setTitle("Moderator")
-        .setDescription("-> "+message.author.tag)
+        .setDescription(`**${message.author.tag}**`)
         .setColor("#61ffef")
         .setFooter(`${message.guild.name} | ${message.guild.id} - ${message.id}`, message.guild.iconURL({dynamic: true}))
         .addField(`${message.content}`,`[Bot Invite](https://discord.com/api/oauth2/authorize?client_id=813498240477560834&permissions=8&scope=bot) | [Support](https://discord.gg/rys9xBgF3q)`)
@@ -263,14 +271,14 @@ message.channel.send('Hey, i am **'+Client.user.tag+"** support me and invite me
         let vipembed = new Discord.MessageEmbed()
         .setThumbnail(message.author.displayAvatarURL({dynamic: true}))
         .setTitle("People")
-        .setDescription("-> "+message.author.tag)
+        .setDescription(`**${message.author.tag}**`)
         .setFooter(`${message.guild.name} | ${message.guild.id} - ${message.id}`, message.guild.iconURL({dynamic: true}))
         .addField(`${message.content}`,`[Bot Invite](https://discord.com/api/oauth2/authorize?client_id=813498240477560834&permissions=8&scope=bot) | [Support](https://discord.gg/rys9xBgF3q) | [Server Invite](https://discord.gg/yNtYBycKQP)`)
 
         let vip1embed = new Discord.MessageEmbed()
         .setThumbnail(message.author.displayAvatarURL({dynamic: true}))
         .setTitle("People")
-        .setDescription("-> "+message.author.tag)
+        .setDescription(`**${message.author.tag}**`)
         .setFooter(`${message.guild.name} | ${message.guild.id} - ${message.id}`, message.guild.iconURL({dynamic: true}))
         .addField(`${message.content}`,`[Bot Invite](https://discord.com/api/oauth2/authorize?client_id=813498240477560834&permissions=8&scope=bot) | [Support](https://discord.gg/rys9xBgF3q) | [Server Invite](https://discord.gg/Gqqq9npbg8)`)
 
@@ -279,38 +287,69 @@ message.channel.send('Hey, i am **'+Client.user.tag+"** support me and invite me
         .setDescription(message.content)
         .setColor("BLACK")
 
-        if(message.author.id === "679001378500247554"){
-            guild.channels.cache.get(serverstats[guild.id].globalchat).send(ownerembed);
+        let lengthmessage = new Discord.MessageEmbed()
+        .setColor("RED")
+        .setDescription("**You can also type *500 space*.** <a:flyingironman:842294044393996328>")
 
+    
+            
+
+        
+         // Neue JS DATEI notwendig bei fragen am mich wenden (Z. 300 - 307)
+
+        if(!message.referenceIsNull(message.referenced_message))
+        {
+            ownerembed.addField(`*replys to* ${message.referenced_message.embeds[0].description}`, `${message.referenced_message.embeds[0].fields[0].name}`);
+            normalembed.addField(`*replys to* ${message.referenced_message.embeds[0].description}`, `${message.referenced_message.embeds[0].fields[0].name}`);
+            adminembed.addField(`*replys to* ${message.referenced_message.embeds[0].description}`, `${message.referenced_message.embeds[0].fields[0].name}`);
+            vipembed.addField(`*replys to* ${message.referenced_message.embeds[0].description}`, `${message.referenced_message.embeds[0].fields[0].name}`);
+            vip1embed.addField(`*replys to* ${message.referenced_message.embeds[0].description}`, `${message.referenced_message.embeds[0].fields[0].name}`);
+        }
+        if(message.embeds.length > 0 ){
+            let gifmessage = message.embeds[0].url
+            guild.channels.cache.get(serverstats[guild.id].globalchat).send(`> **${message.author.tag}**\n*sended at **${message.guild.name}** a Image* ${[gifmessage]}`);
         }else{
-            if(message.author.id === "774752109064486932"){
-                guild.channels.cache.get(serverstats[guild.id].globalchat).send(adminembed);
+            if(message.author.id === "679001378500247554"){
+                guild.channels.cache.get(serverstats[guild.id].globalchat).send(ownerembed);
+    
             }else{
-                if(message.author.id === "609546162415861810"){
+                if(message.author.id === "774752109064486932"){
                     guild.channels.cache.get(serverstats[guild.id].globalchat).send(adminembed);
-
                 }else{
-                    if(message.author.id === "734834308883415141"){
+                    if(message.author.id === "609546162415861810"){
                         guild.channels.cache.get(serverstats[guild.id].globalchat).send(adminembed);
+    
                     }else{
-                        if(message.author.id === "455469757467066369"){
-                            guild.channels.cache.get(serverstats[guild.id].globalchat).send(newsembed);
-
+                        if(message.author.id === "734834308883415141"){
+                            guild.channels.cache.get(serverstats[guild.id].globalchat).send(adminembed);
                         }else{
-                            if(message.guild.id === "740989028060495872"){
-                                guild.channels.cache.get(serverstats[guild.id].globalchat).send(vipembed);
+                            if(message.author.id === "455469757467066369"){
+                                guild.channels.cache.get(serverstats[guild.id].globalchat).send(newsembed);
     
                             }else{
-                                if(message.guild.id === "818434821465964555"){
-                                    guild.channels.cache.get(serverstats[guild.id].globalchat).send(vip1embed);
-    
+                                if(message.guild.id === "740989028060495872"){
+                                    guild.channels.cache.get(serverstats[guild.id].globalchat).send(vipembed);
+        
                                 }else{
-                                    if(message.guild.id === "707636268074270751"){
-                                        guild.channels.cache.get(serverstats[guild.id].globalchat).send(supportembed);
-    
+                                    if(message.guild.id === "818434821465964555"){
+                                        guild.channels.cache.get(serverstats[guild.id].globalchat).send(vip1embed);
+        
                                     }else{
-                                    guild.channels.cache.get(serverstats[guild.id].globalchat).send(normalembed);
-                                    }}}}}}}}}}}}})
+                                        if(message.guild.id === "707636268074270751"){
+                                            guild.channels.cache.get(serverstats[guild.id].globalchat).send(supportembed);
+        
+                                        }else{
+                                        guild.channels.cache.get(serverstats[guild.id].globalchat).send(normalembed);
+                                        }}}}}}}}}}}}}
+
+        }
+
+            
+            
+
+        
+        
+        )
         message.delete()
       }
 
@@ -323,7 +362,7 @@ message.channel.send('Hey, i am **'+Client.user.tag+"** support me and invite me
             let CaptainEmbed = new Discord.MessageEmbed()
         .setThumbnail("https://terrigen-cdn-dev.marvel.com/content/prod/1x/003cap_com_crd_01.jpg")
         .setTitle(`<a:flyingironman:842294044393996328> Avengers r8 machine`)
-        .setColor("5865f2")
+        .setColor("FEE75C")
         .setDescription(`<@!${user.user.id}> are **Captain America**`)
         .setFooter(`${message.guild.name} | ${message.guild.id} | ${message.id}`, message.guild.iconURL({dynamic: true}))
         
@@ -331,7 +370,7 @@ message.channel.send('Hey, i am **'+Client.user.tag+"** support me and invite me
             let Captain1Embed = new Discord.MessageEmbed()
         .setThumbnail("https://terrigen-cdn-dev.marvel.com/content/prod/1x/434usa_com_crd_01.jpg")
         .setTitle(`<a:flyingironman:842294044393996328> Avengers r8 machine`)
-        .setColor("5865f2")
+        .setColor("FEE75C")
         .setDescription(`<@!${user.user.id}> are **U.S. Agent**`)
         .setFooter(`${message.guild.name} | ${message.guild.id} | ${message.id}`, message.guild.iconURL({dynamic: true}))
         
@@ -339,7 +378,7 @@ message.channel.send('Hey, i am **'+Client.user.tag+"** support me and invite me
             let ThorEmbed = new Discord.MessageEmbed()
         .setThumbnail("https://terrigen-cdn-dev.marvel.com/content/prod/1x/004tho_com_crd_01.jpg")
         .setTitle(`<a:flyingironman:842294044393996328> Avengers r8 machine`)
-        .setColor("5865f2")
+        .setColor("FEE75C")
         .setDescription(`<@!${user.user.id}> are **Thor**`)
         .setFooter(`${message.guild.name} | ${message.guild.id} | ${message.id}`, message.guild.iconURL({dynamic: true}))
         
@@ -347,7 +386,7 @@ message.channel.send('Hey, i am **'+Client.user.tag+"** support me and invite me
             let WandaEmbed = new Discord.MessageEmbed()
         .setThumbnail("https://terrigen-cdn-dev.marvel.com/content/prod/1x/012scw_com_crd_01.jpg")
         .setTitle(`<a:flyingironman:842294044393996328> Avengers r8 machine`)
-        .setColor("5865f2")
+        .setColor("FEE75C")
         .setDescription(`<@!${user.user.id}> are **Scarltet Witch**`)
         .setFooter(`${message.guild.name} | ${message.guild.id} | ${message.id}`, message.guild.iconURL({dynamic: true}))
         
@@ -355,7 +394,7 @@ message.channel.send('Hey, i am **'+Client.user.tag+"** support me and invite me
             let FalconEmbed = new Discord.MessageEmbed()
         .setThumbnail("https://terrigen-cdn-dev.marvel.com/content/prod/1x/014fal_com_crd_01.jpg")
         .setTitle(`<a:flyingironman:842294044393996328> Avengers r8 machine`)
-        .setColor("5865f2")
+        .setColor("FEE75C")
         .setDescription(`<@!${user.user.id}> are **Sam Wilson**`)
         .setFooter(`${message.guild.name} | ${message.guild.id} | ${message.id}`, message.guild.iconURL({dynamic: true}))
         
@@ -363,7 +402,7 @@ message.channel.send('Hey, i am **'+Client.user.tag+"** support me and invite me
             let TonyEmbed = new Discord.MessageEmbed()
         .setThumbnail("https://www.comicbasics.com/wp-content/uploads/2019/08/Tony-Stark-Comic.png")
         .setTitle(`<a:flyingironman:842294044393996328> Avengers r8 machine`)
-        .setColor("5865f2")
+        .setColor("FEE75C")
         .setDescription(`<@!${user.user.id}> are **Tony Stark**`)
         .setFooter(`${message.guild.name} | ${message.guild.id} | ${message.id}`, message.guild.iconURL({dynamic: true}))
         
@@ -371,7 +410,7 @@ message.channel.send('Hey, i am **'+Client.user.tag+"** support me and invite me
             let PeterEmbed = new Discord.MessageEmbed()
         .setThumbnail("https://terrigen-cdn-dev.marvel.com/content/prod/1x/005smp_com_crd_01.jpg")
         .setTitle(`<a:flyingironman:842294044393996328> Avengers r8 machine`)
-        .setColor("5865f2")
+        .setColor("FEE75C")
         .setDescription(`<@!${user.user.id}> are **Peter Paker**`)
         .setFooter(`${message.guild.name} | ${message.guild.id} | ${message.id}`, message.guild.iconURL({dynamic: true}))
         
@@ -379,7 +418,7 @@ message.channel.send('Hey, i am **'+Client.user.tag+"** support me and invite me
             let PeterQuillEmbed = new Discord.MessageEmbed()
         .setThumbnail("https://terrigen-cdn-dev.marvel.com/content/prod/1x/021slq_com_crd_01.jpg")
         .setTitle(`<a:flyingironman:842294044393996328> Avengers r8 machine`)
-        .setColor("5865f2")
+        .setColor("FEE75C")
         .setDescription(`<@!${user.user.id}> are **Peter Quill**`)
         .setFooter(`${message.guild.name} | ${message.guild.id} | ${message.id}`, message.guild.iconURL({dynamic: true}))
         
@@ -388,7 +427,7 @@ message.channel.send('Hey, i am **'+Client.user.tag+"** support me and invite me
         .setThumbnail("https://terrigen-cdn-dev.marvel.com/content/prod/1x/011blw_com_crd_01.jpg")
         .setTitle(`<a:flyingironman:842294044393996328> Avengers r8 machine`)
         .setDescription(`<@!${user.user.id}> are **Natasha Romanoff**`)
-        .setColor("5865f2")
+        .setColor("FEE75C")
         .setFooter(`${message.guild.name} | ${message.guild.id} | ${message.id}`, message.guild.iconURL({dynamic: true}))
         
         
@@ -487,7 +526,7 @@ message.channel.send('Hey, i am **'+Client.user.tag+"** support me and invite me
         .setDescription(`<:verify_bot:856172918928965632> Bot-Prefix: **${prefix}**`)
         .setFooter(`${message.guild.name} | ${message.guild.id} | ${message.id}`, message.guild.iconURL({dynamic: true}))
         .setDescription(`<@!${user.user.id}>`)
-        .setColor("5865f2")
+        .setColor("FEE75C")
         .addField(`**Link**`, `[Avatar URL](${user.user.displayAvatarURL({dynamic:true})})`)
         .addField(`**Username**`, `${user.user.tag}`)
         .addField(`**Nickname**`, `${user.nickname}`)
@@ -498,6 +537,10 @@ message.channel.send('Hey, i am **'+Client.user.tag+"** support me and invite me
         .addField(`**Roles** [${roles.length}]`, `${displayroles}`)
         .addField(`**Flags**` ,`[${userflags.length}]`)
         message.channel.send(userinfoembed)
+
+        if(error){
+            message.channel.send("An error happend *"+error+"*")
+        }
        
       }
 
@@ -545,7 +588,7 @@ message.channel.send('Hey, i am **'+Client.user.tag+"** support me and invite me
             .setTitle(`<a:flyingironman:842294044393996328> ServerInfo machine`)
             .setDescription(`<:verify_bot:856172918928965632> Bot-Prefix: **${prefix}**`)
             .setFooter(`${message.guild.name} | ${message.guild.id} | ${message.id}`, message.guild.iconURL({dynamic: true}))
-            .setColor("5865f2")
+            .setColor("FEE75C")
             .setThumbnail(server.logo)
             .addField("**Name**: ",server.name)
             .addField("**ID**: ",server.id)
@@ -569,6 +612,11 @@ message.channel.send('Hey, i am **'+Client.user.tag+"** support me and invite me
             ])
     
             message.channel.send(embed);
+
+            if(error){
+                message.channel.send("An error happend *"+error+"*")
+            }
+
       }
 
     if(message.content === prefix+"react"){
@@ -751,7 +799,7 @@ message.channel.send('Hey, i am **'+Client.user.tag+"** support me and invite me
         .setDescription(`**Attention** <@!${user.id}>, you've been **warned** <a:flyingironman:842294044393996328>!\n**Reason** -> ${grund}`)
         .setThumbnail(user.displayAvatarURL({dynamic: true}))
         .setFooter(`${message.guild.name} | ${message.guild.id} | ${message.id}`, message.guild.iconURL({dynamic: true}))
-        .setColor("5865f2")
+        .setColor("FEE75C")
 
         message.channel.send(embed)
 
@@ -855,7 +903,7 @@ if(message.content.startsWith(prefix+"avatar")){
 
     let avatarembed = new Discord.MessageEmbed()
     .setTitle("avatar machine")
-    .setColor("5865f2")
+    .setColor("FEE75C")
     .setDescription(`**<@!${user.id}>'s Avatar**`)
     .setImage(user.displayAvatarURL({dynamic:true, size: 1024}))
     .addField("*Download*", `[URL](${user.displayAvatarURL({dynamic:true})}) | [Problems](https://discord.gg/rys9xBgF3q)`)
@@ -880,7 +928,7 @@ if(message.content.startsWith(`${prefix}howgay`)){
     .setDescription(`<@!${user.id}> is **${rating} %** gay. :rainbow_flag:`)
     .setThumbnail(user.displayAvatarURL({dynamic:true}))
     .setFooter(`${message.guild.name} | ${message.guild.id} | ${message.id}`, message.guild.iconURL({dynamic: true}))
-    .setColor("GREEN")
+    .setColor("FEE75C")
 
     if(rating <= 50){
         message.channel.send(how1gayembed)
@@ -907,7 +955,7 @@ if(message.content.startsWith(`${prefix}howsimp`)){
     .setDescription(`<@!${user.id}> is **${rating} %** simping.`)
     .setThumbnail(user.displayAvatarURL({dynamic: true}))
     .setFooter(`${message.guild.name} | ${message.guild.id} | ${message.id}`, message.guild.iconURL({dynamic: true}))
-    .setColor("GREEN")
+    .setColor("FEE75C")
 
     if(rating <= 50){
         message.channel.send(how1simpembed)
@@ -922,37 +970,77 @@ if(message.content.toLowerCase() === `${prefix}help`){
         .setThumbnail(message.guild.iconURL({dynamic: true}))
         .setTitle(`Helping Desk`)
         .setDescription(`<:verify_bot:856172918928965632> Bot-Prefix: **${prefix}**\n`)
-        .setColor("5865f2")
+        .setColor("FEE75C")
         .setTimestamp()
         .setFooter(`${message.guild.name}`, message.guild.iconURL({dynamic: true}))
         .addField("Example","``"+prefix+"setticket <#channel>``",true)
-        .addField("> __Marvel__ [1]", "*whoavenger*")
-        .addField("> __Module__ [12]", "*setticket,setsuprole*\n**-> Set the ticket system, *<setsuprole>* see the Ticket channel and ping it there.**\n*setwelcome,setleave,setwelcmsg,delwelcome,delleave*\n**-> Set *welcome/leave* channel**\n*warn,nowwarn,delwarn*\n*clear,kick,~~ban~~*\n**-> Moderate your server**")
-        .addField("> __Main__ [6]", "*serverinfo,userinfo,avatar*\n*howgay,howsimp,react*")
-        .addField("> __Logs__ [4]", "*nowprefix?,setprefix,ping,invite*")
-        .addField("> __Corona__ [5]", "*covidwho,~~covidinz,covidneu,covidrwer~~*")
-        .addField("> __Global Chat__ [2]", "*setglobal,delglobal*")
+        .addField("> __Marvel__ [1] <:marvel:798603820946423928>", "*whoavenger*")
+        .addField("> __Module__ [12] <a:config:846451153411637328>", "*setticket,setsuprole*\n**-> Set the ticket system, *<setsuprole>* see the Ticket channel and ping it there.**\n*setwelcome,setleave,setwelcmsg,delwelcome,delleave*\n**-> Set *welcome/leave* channel**\n*warn,nowwarn,delwarn*\n*clear,kick,~~ban~~*\n**-> Moderate your server**")
+        .addField("> __Main__ [6] <a:walker:842293073794564098>", "*serverinfo,userinfo,avatar*\n*howgay,howsimp,react*")
+        .addField("> __Logs__ [4] <:support_badge:856254638608613436>", "*nowprefix?,setprefix,ping,invite,*")
+        .addField("> __Corona__ [3] <a:Virus:846450994195726356>", "*covidrobertk,covidregion,covidcountry*")
+        .addField("> __Global Chat__ [2] :gloabal:", "*setglobal,delglobal*")
         .addField(`Helpful URL's`,`[Bot-Invite](https://discord.com/api/oauth2/authorize?client_id=813498240477560834&permissions=8&scope=bot) | [Support-Server](https://discord.gg/rys9xBgF3q)`)
 
 
         message.channel.send(`**I hope I’m *helping* you...** <a:flyingironman:842294044393996328>`, helpembed)
 
     }
-    if(message.content.startsWith(prefix+"covidwho")){
+    if(message.content.startsWith(prefix+"covidregion")){
         let corona1embed = new Discord.MessageEmbed()
-        .setColor("5865f2")
-        .setTitle(`<a:Virus:846450994195726356> Covid Desk`)
-        .setImage("https://cdn.discordapp.com/attachments/794390733813579777/857351873781432360/image0.png")
+        .setColor("FEE75C")
+        .setTitle(`<a:Virus:846450994195726356> Corona situation global`)
+        .setDescription("**DATA:** *Situation by WHO Region*")
+        .setImage("https://cdn.discordapp.com/attachments/794390733813579777/859863558316359680/image1.png")
         .setFooter(`${message.guild.name}`, message.guild.iconURL({dynamic: true}))
         .setTimestamp()
-        let button1 = new disbut.MessageButton()
+        let button1 = new MessageButton()
   .setStyle('url') 
+  .setEmoji("859867511520231434")
   .setLabel('Forwarding to WHO') 
   .setURL('https://covid19.who.int/')
 
   message.channel.send({embed: corona1embed, button: button1})
 
     }
+    if(message.content.startsWith(prefix+"covidcountry")){
+        let corona1embed = new Discord.MessageEmbed()
+        .setColor("FEE75C")
+        .setTitle(`<a:Virus:846450994195726356> Corona situation global`)
+        .setDescription("**DATA:** *Situation by Country, Territory or Area*")
+        .setImage("https://cdn.discordapp.com/attachments/794390733813579777/859863558590431242/image2.png")
+        .setFooter(`${message.guild.name}`, message.guild.iconURL({dynamic: true}))
+        .setTimestamp()
+        let button1 = new MessageButton()
+  .setStyle('url')
+  .setEmoji("859867511520231434")
+  .setLabel('Forwarding to WHO') 
+  .setURL('https://covid19.who.int/')
+
+  message.channel.send({embed: corona1embed, button: button1})
+
+    }
+    if(message.content.startsWith(prefix+"covidrobertk")){
+        let corona1embed = new Discord.MessageEmbed()
+        .setColor("FEE75C")
+        .setTitle(`<a:Virus:846450994195726356> Corona situation germany`)
+        .setDescription("**DATA:** *Situation by germany*")
+        .setImage("https://cdn.discordapp.com/attachments/770763414960209930/861197737953460254/image0.png")
+        .setFooter(`${message.guild.name}`, message.guild.iconURL({dynamic: true}))
+        .setTimestamp()
+        let button1 = new MessageButton()
+  .setStyle('url') 
+  .setEmoji("859867511520231434")
+  .setLabel('Forwarding to Robert-Koch-Institut') 
+  .setURL('https://experience.arcgis.com/experience/478220a4c454480e823b17327b2bf1d4/page/page_1/')
+
+  message.channel.send({embed: corona1embed, button: button1})
+
+    }
+    
+
+
+
 
     if(message.content.startsWith(prefix+"ping")){
         message.channel.send("<a:Loading:800341232870096938> Pinging...").then(resultmessage=>{
@@ -965,7 +1053,7 @@ if(message.content.toLowerCase() === `${prefix}help`){
         .setThumbnail(Client.user.displayAvatarURL({dynamic: true}))
         .setTitle(`Ping Desk`)
         .setDescription(`<:verify_bot:856172918928965632> Bot-Prefix: **${prefix}**`)
-        .setColor("5865f2")
+        .setColor("FEE75C")
         .setFooter(`${message.guild.name} | ${message.guild.id} | ${message.id}`, message.guild.iconURL({dynamic: true}))
         .addField("**"+message.guild.name+"** Latency is **"+ping+"** ms.\n**API** Latency is **"+Client.ws.ping+"** ms.","Note: ``Good!`` <a:flyingironman:842294044393996328>")
         message.channel.send(pingembed)
@@ -996,10 +1084,10 @@ Client.on("guildCreate", (guild) =>{
     const channelembed = new Discord.MessageEmbed()
         .setTitle(`Thank you! <a:flyingironman:842294044393996328>`)
         .setDescription(`<:verify_bot:856172918928965632> Standard-Bot-Prefix: **a!**`)
-        .setColor("5865f2")
+        .setColor("FEE75C")
         .setFooter(`${Client.user.tag}`, Client.user.displayAvatarURL({dynamic: true}))
         .setTimestamp()
-        .addField("**The Avengers#0919**", "**Thank you so much for inviting me to your server.**\n*You get an overview of my commands with*\n> ```a!help```\nThe bot is **restarted weekly**, for this reason it may be that you need to set up the ticket new.\n**Otherwise, I hope I was able to help you.**")
+        .addField("**The Avengers#0919**", "**Thank you so much for inviting me to your server.**\n*You get an overview of my commands with*\n>``a!help``\nThe bot is **restarted weekly**, for this reason it may be that you need to set up the ticket new.\n**Otherwise, I hope I was able to help you.**")
         .addField(`Helpful URL's`,`[Bot-Invite](https://discord.com/api/oauth2/authorize?client_id=813498240477560834&permissions=8&scope=bot) | [Support-Server](https://discord.gg/rys9xBgF3q)`)
 
         channelToSendTo.send("<:member_join:846729870964949002> **The Avengers#0919** joined the Server!",channelembed)
@@ -1022,15 +1110,19 @@ Client.on("messageReactionAdd", async (reaction, user)=>{
 
     serverstats[reaction.message.guild.id].suprole
     if(user.bot) return
+    
     if(reaction.emoji.name == `🎫`){
         reaction.users.remove(user);
+       
+        
+        
 
         let category = reaction.message.guild.channels.cache.find(ct=>ct.name === "tickets" && ct.type === "category");
+        
 
         if(!category) await reaction.message.guild.channels.create("tickets", {type:"category"}).then(cat=>category = cat);
-        
-        if(reaction.message.guild.channels.cache.find(`ticket-${user.username}`)) return reaction.message.reply("You can only create one ticket in a same guild!")
 
+        
 
 
         reaction.message.guild.channels.create(`ticket-${user.username}`,{type:"text"}).then(ch=>{
@@ -1053,7 +1145,7 @@ Client.on("messageReactionAdd", async (reaction, user)=>{
             let welcticket = new Discord.MessageEmbed()
             .setAuthor(user.tag)
             .setTitle("Ticket machine")
-            .setColor("5865f2")
+            .setColor("FEE75C")
             .setDescription(`${Client.user.tag} **has *sucessfully* created a ticket!**`)
             .setThumbnail(user.displayAvatarURL({dynamic:true, size: 1024}))
             .setFooter(`${reaction.message.guild.name} | ${reaction.message.guild.id}`, reaction.message.guild.iconURL({dynamic: true}))
@@ -1061,11 +1153,11 @@ Client.on("messageReactionAdd", async (reaction, user)=>{
             
             
 
-            ch.send(`<@&${serverstats[reaction.message.guild.id].suprole}>\n**<@!${user.id}> you can describe our problem here!**`, welcticket);
+            ch.send(`<@&${serverstats[reaction.message.guild.id].suprole}>\n**<@!${user.id}> describe the problem here!**`, welcticket);
         }).catch(err=>{
             if(err) return reaction.message.channel.send("An error happend "+err);
-            reaction.message.guild.channels.cache.delete(ct=>ct.name === "tickets" && ct.type === "category")
-        })
+            
+        }) 
     }
 
 });
@@ -1076,7 +1168,7 @@ Client.on("ready", () =>{
     let statuse = [
       "a!help | "+Client.guilds.cache.size+" servers",
       `nowprefix?`,
-      `with ${Client.users.cache.size} Users`
+      `with John Walker😏`
       ]
   
       let number = 0;
