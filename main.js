@@ -3,18 +3,16 @@ DisTube = require('distube')
 const Client = new Discord.Client();
 require('discord-buttons')(Client);
 const { MessageButton, MessageActionRow } = require("discord-buttons")
-const token = "123456789"
+const token = 'DEIN TOKEN'
 const fs = require("fs")
 const warnFile = require("./warns.json");
 const serverstats = require("./servers.json");
 const musikserverstats = require("./musik.json");
 const enmap = require("enmap");
 const moment = require("moment");
-const randompuppy = require("random-puppy");
 const api = require("imageapi.js");
 const distube = new DisTube(Client, { searchSongs: true, emitNewSongOnly: true });
-const { error, time, clear } = require("console");
-const { type } = require("os");
+const { error } = require("console");
 const UrlofImages = require('get-image-urls');
 const queryString = require('querystring');
 
@@ -117,10 +115,10 @@ if(!musikserverstats[message.guild.id]){
     }
 });
 
-
+// Queue status template
 const status = (queue) => `Volume: \`${queue.volume}%\` | Filter: \`${queue.filter || "Off"}\` | Loop: \`${queue.repeatMode ? queue.repeatMode == 2 ? "All Queue" : "This Song" : "Off"}\` | Autoplay: \`${queue.autoplay ? "On" : "Off"}\``;
 
-
+// DisTube event listeners, more in the documentation page
 distube
     .on("playSong", (message, queue, song) => message.channel.send(
         `Playing \`${song.name}\` - \`${song.formattedDuration}\`\nRequested by: ${song.user}\n${status(queue)}`
@@ -134,12 +132,12 @@ distube
     .on("addList", (message, queue, playlist) => message.channel.send(
         `Added \`${playlist.name}\` playlist (${playlist.songs.length} songs) to queue\n${status(queue)}`
     ))
-   
+    // DisTubeOptions.searchSongs = true
     .on("searchResult", (message, result) => {
         let i = 0;
         message.channel.send(`**Choose an option from below**\n${result.map(song => `**${++i}**. ${song.name} - \`${song.formattedDuration}\``).join("\n")}\n*Enter anything else or wait 60 seconds to cancel*`);
     })
-    
+    // DisTubeOptions.searchSongs = true
     .on("searchCancel", (message) => message.channel.send(`Searching canceled`))
     .on("error", (message, e) => {
         console.error(e)
@@ -356,7 +354,7 @@ message.channel.send('Hey, i am **'+Client.user.tag+"** support me and invite me
     }
 
     if(message.channel.id === serverstats[message.guild.id].globalchat && !message.content.startsWith(prefix) && !message.author.bot){
-        Client.guilds.cache.forEach(guild=>{
+        Client.guilds.cache.forEach(async guild=>{
       if(serverstats[guild.id] !== undefined){
           if(serverstats[guild.id].globalchat){
             if(serverstats[guild.id].globalchat != "noID"){
@@ -420,27 +418,19 @@ message.channel.send('Hey, i am **'+Client.user.tag+"** support me and invite me
         let lengthmessage = new Discord.MessageEmbed()
         .setColor("RED")
         .addField(`**Upps!**`,`**${message.author.tag}** at *${message.guild.name}*\n**You can also a message with *500 spaces.* ** <a:flyingironman:842294044393996328>`)
-
-        const getURLs = async url => {
-            return await UrlofImages(url);
-            }
-            const URLs = await getURLs(message.embeds[0].url);
-            const getIndex = () => {
-            for(let j = 0; j < URLs.length; ++j)
-            {
-            if(queryString.parse(URLs[j].url)[URLs[j].url] === undefined) {
-            return j;
-            }
-            }
-            }
-            console.log(await URLs[getIndex()]);
-            ownerembed.addField(`*${message.author.username}*`,`sent gif`)
-            ownerembed.setImage(await URLs[getIndex()].url)
         
-           
-
+        
+        let uploadfailed = new Discord.MessageEmbed()
+        .setColor('RED')
+        .addField('**Upload Failed**',`**${message.author.tag}** at **${message.guild.name}** *you can't sent **images** here*`)
+        
+                        
         
 
+        
+        
+        
+    
 
         if(!message.referenceIsNull(message.referenced_message))
         {
@@ -451,55 +441,69 @@ message.channel.send('Hey, i am **'+Client.user.tag+"** support me and invite me
             vip1embed.addField(`*replys to* ${message.referenced_message.embeds[0].description}`, `${message.referenced_message.embeds[0].fields[0].name}`);
             lengthmessage.addField(`*replys to* ${message.referenced_message.embeds[0].description}`, `${message.referenced_message.embeds[0].fields[0].name}`)
         }
-        if(message.attachments && message.content.length <= 0)
-                        {
-                            message.attachments.forEach(async (e)=> {
-                                ownerembed.setImage(e.url.toString())
-                                normalembed.setImage(e.url.toString())
-                                adminembed.setImage(e.url.toString())
-                                vipembed.setImage(e.url.toString())
-                                vip1embed.setImage(e.url.toString())
-                            })
+
+        
+
+        
+        if(message.embeds.length > 0)
+                        { 
+                            guild.channels.cache.get(serverstats[guild.id].globalchat).send(uploadfailed);
                         }else{
-                            if(message.author == message.content >= 2){
-                             (message.channel.send(hmessage))
-                            }else{
-                                if(message.content.length > 500){
-                                    guild.channels.cache.get(serverstats[guild.id].globalchat).send(lengthmessage);
+                            if(message.content.length > 500){
+                                guild.channels.cache.get(serverstats[guild.id].globalchat).send(lengthmessage);
+                                }else{
+                                    if(message.author.id === "679001378500247554"){
+                                        guild.channels.cache.get(serverstats[guild.id].globalchat).send(ownerembed);
                                     }else{
-                                        if(message.author.id === "679001378500247554"){
-                                            guild.channels.cache.get(serverstats[guild.id].globalchat).send(ownerembed);
+                                        if(message.author.id === "774752109064486932"){
+                                            guild.channels.cache.get(serverstats[guild.id].globalchat).send(adminembed);
                                         }else{
-                                            if(message.author.id === "774752109064486932"){
+                                            if(message.author.id === "609546162415861810"){
                                                 guild.channels.cache.get(serverstats[guild.id].globalchat).send(adminembed);
                                             }else{
-                                                if(message.author.id === "609546162415861810"){
+                                                if(message.author.id === "734834308883415141"){
                                                     guild.channels.cache.get(serverstats[guild.id].globalchat).send(adminembed);
                                                 }else{
-                                                    if(message.author.id === "734834308883415141"){
-                                                        guild.channels.cache.get(serverstats[guild.id].globalchat).send(adminembed);
+                                                    if(message.author.id === "455469757467066369"){
+                                                        guild.channels.cache.get(serverstats[guild.id].globalchat).send(newsembed);
                                                     }else{
-                                                        if(message.author.id === "455469757467066369"){
-                                                            guild.channels.cache.get(serverstats[guild.id].globalchat).send(newsembed);
+                                                        if(message.guild.id === "740989028060495872"){
+                                                            guild.channels.cache.get(serverstats[guild.id].globalchat).send(vipembed);
                                                         }else{
-                                                            if(message.guild.id === "740989028060495872"){
-                                                                guild.channels.cache.get(serverstats[guild.id].globalchat).send(vipembed);
+                                                            if(message.guild.id === "818434821465964555"){
+                                                                guild.channels.cache.get(serverstats[guild.id].globalchat).send(vip1embed);
                                                             }else{
-                                                                if(message.guild.id === "818434821465964555"){
-                                                                    guild.channels.cache.get(serverstats[guild.id].globalchat).send(vip1embed);
+                                                                if(message.guild.id === "707636268074270751"){
+                                                                    guild.channels.cache.get(serverstats[guild.id].globalchat).send(supportembed);
+                                
                                                                 }else{
-                                                                    if(message.guild.id === "707636268074270751"){
-                                                                        guild.channels.cache.get(serverstats[guild.id].globalchat).send(supportembed);
-                                    
-                                                                    }else{
-                                                                    guild.channels.cache.get(serverstats[guild.id].globalchat).send(normalembed);
-                                                                    }}}}}}}}}}}}}}
+                                                                guild.channels.cache.get(serverstats[guild.id].globalchat).send(normalembed);
+                                                                }}}}}}}}}}}}
+        
+                                                            }}
+
+                        }
+                    
+            
+
+            
+        
+                            
+    
+            
+
+          
+                            
+
+                           
+                            
+                                
                     
     
     
-                            }
+                            
 
-                            }
+                            
                             
         
             
