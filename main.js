@@ -3,7 +3,7 @@ DisTube = require('distube')
 const Client = new Discord.Client();
 require('discord-buttons')(Client);
 const { MessageButton, MessageActionRow } = require("discord-buttons")
-const token = 'DEIN TOKEN'
+const token = 'TOKEN'
 const fs = require("fs")
 const warnFile = require("./warns.json");
 const serverstats = require("./servers.json");
@@ -13,8 +13,6 @@ const moment = require("moment");
 const api = require("imageapi.js");
 const distube = new DisTube(Client, { searchSongs: true, emitNewSongOnly: true });
 const { error } = require("console");
-const UrlofImages = require('get-image-urls');
-const queryString = require('querystring');
 
 const settings = new enmap({
     name: "settings",
@@ -27,15 +25,22 @@ const settings = new enmap({
 
 Client.on("guildMemberAdd", async member =>{
     let channel = member.guild.channels.cache.find(ch => ch.id === serverstats[member.guild.id].welcomechannel);
-    if(!channel || channel.id === undefined) return;
-    if(!serverstats[member.guild.id].welcomemsg) return;
+    if(
+        !channel || channel.id === null
+      ) return;
+    if(
+        !serverstats[member.guild.id].welcomemsg === null
+      ) return;
+    
     channel.send(`<:member_join:846729870964949002> <@!${member.id}> ${serverstats[member.guild.id].welcomemsg}\nCurrent Members -> **${member.guild.memberCount}** <a:flyingironman:842294044393996328>`);
 
 })
 
 Client.on("guildMemberRemove", async member =>{
     let channel = member.guild.channels.cache.find(ch => ch.id === serverstats[member.guild.id].leavechannel);
-    if(!channel || channel.id === undefined) return;
+    if(
+        !channel || channel.id === null
+        ) return;
     channel.send(`<:RedArrow:846744117844377600> **${member.user.username}** are left **${member.guild.name}**\n**Goodbye!** <a:flyingironman:842294044393996328>\nCurrent Members -> **${member.guild.memberCount}**`);
 
 })
@@ -44,7 +49,7 @@ Client.on("message", async (message) => {
 
 if(!musikserverstats[message.guild.id]){
         musikserverstats[message.guild.id] = {
-            mprefix:"a!",
+            mprefix: "a!",
            
         }
     }
@@ -57,7 +62,8 @@ if(!musikserverstats[message.guild.id]){
 
     let mprefix = musikserverstats[message.guild.id].mprefix
 
-    if(message.content.toLowerCase() === "nowmusicprefix?"){
+    if(message.content.toLowerCase() === "nowmusicprefix?")
+    {
         message.channel.send("Fettching Data [**10/10]**...").then(msg1=>{
             msg1.edit("<a:Loading:800341232870096938> Loading...").then(msg=>{
                 msg.edit('The current Music prefix is **'+musikserverstats[message.guild.id].mprefix+'** . <a:flyingironman:842294044393996328>')
@@ -66,10 +72,13 @@ if(!musikserverstats[message.guild.id]){
         })
     }
 
-    if(message.content.startsWith(mprefix+"setmusicprefix")){
+    if(message.content.startsWith(mprefix+"setmusicprefix"))
+    {
         let newprefix = message.content.split(" ").slice(1).join("");
 
-        if(!message.member.hasPermission("ADMINISTRATOR")) return message.reply("You need **ADMINISTRATPR** rights.");
+        if(
+            !message.member.hasPermission("ADMINISTRATOR")
+            ) return message.reply("You need **ADMINISTRATPR** rights.");
 
         musikserverstats[message.guild.id].mprefix = newprefix;
 
@@ -115,10 +124,10 @@ if(!musikserverstats[message.guild.id]){
     }
 });
 
-// Queue status template
+
 const status = (queue) => `Volume: \`${queue.volume}%\` | Filter: \`${queue.filter || "Off"}\` | Loop: \`${queue.repeatMode ? queue.repeatMode == 2 ? "All Queue" : "This Song" : "Off"}\` | Autoplay: \`${queue.autoplay ? "On" : "Off"}\``;
 
-// DisTube event listeners, more in the documentation page
+
 distube
     .on("playSong", (message, queue, song) => message.channel.send(
         `Playing \`${song.name}\` - \`${song.formattedDuration}\`\nRequested by: ${song.user}\n${status(queue)}`
@@ -145,7 +154,7 @@ distube
     });
 
 Client.on("message", async message =>{
-    // WarnFile -> warns.json
+    
     if(!warnFile[message.author.id+message.guild.id]){
         warnFile[message.author.id+message.guild.id] = {
             warns:0,
@@ -161,11 +170,11 @@ Client.on("message", async message =>{
     if(!serverstats[message.guild.id]){
         serverstats[message.guild.id] = {
             prefix:"a!",
-            welcomechannel: undefined,
-            welcomemsg: undefined,
-            leavechannel : undefined,
-            globalchat: undefined,
-            suprole: undefined
+            welcomechannel: null,
+            welcomemsg: null,
+            leavechannel : null,
+            globalchat: null,
+            suprole: null
         }
     }
 
@@ -176,6 +185,8 @@ Client.on("message", async message =>{
     })
 
     let prefix = serverstats[message.guild.id].prefix;
+
+
 
     if(message.content.toLowerCase() === "nowprefix?"){
         message.channel.send("Fettching Data [**10/10]**...").then(msg1=>{
@@ -244,6 +255,7 @@ Client.on("message", async message =>{
             })
      
     }
+    
 
     if(message.content.startsWith(prefix+"meme")){
         const subReddits = ["meme", "dankmemes", "memes"];
@@ -323,14 +335,12 @@ message.channel.send('Hey, i am **'+Client.user.tag+"** support me and invite me
     }
    
 
-     // Set Global 
-
     if(message.content.startsWith(prefix+"setglobal")){
         let channel = message.mentions.channels.first();
         if(!channel) return message.channel.send("Du hast keinen Kanal aneggeben.").then(msg=>msg.delete({timeout:"5000"}));
         if(!message.member.hasPermission("MANAGE_CHANNELS")) return message.channel.send("Du hast keien Rechte dafür.").then(msg=>msg.delete({timeout:"5000"}));
         if(!serverstats[message.guild.id].globalchat){
-            serverstats[message.guild.id].globalchat = undefined
+            serverstats[message.guild.id].globalchat = null
         }
         serverstats[message.guild.id].globalchat = channel.id;
         
@@ -347,17 +357,17 @@ message.channel.send('Hey, i am **'+Client.user.tag+"** support me and invite me
     if(message.content.startsWith(prefix+"delglobal")){
         if(!message.member.hasPermission("MANAGE_CHANNELS")) return message.channel.send("You need the **MANAGE CHANNELS** premission.").then(msg=>msg.delete({timeout:"5000"}));
         if(!serverstats[message.guild.id].globalchat){
-            serverstats[message.guild.id].globalchat = undefined
+            serverstats[message.guild.id].globalchat = null
         }
-        serverstats[message.guild.id].globalchat = "noID";
+        serverstats[message.guild.id].globalchat = null;
         message.channel.send("**Deleted the **global** channel from this guild.** ")
     }
 
     if(message.channel.id === serverstats[message.guild.id].globalchat && !message.content.startsWith(prefix) && !message.author.bot){
         Client.guilds.cache.forEach(async guild=>{
-      if(serverstats[guild.id] !== undefined){
+      if(serverstats[guild.id] !== null){
           if(serverstats[guild.id].globalchat){
-            if(serverstats[guild.id].globalchat != "noID"){
+            if(serverstats[guild.id].globalchat != null){
               if(guild.channels.cache.get(serverstats[guild.id].globalchat)){   
                   
                 
@@ -385,7 +395,6 @@ message.channel.send('Hey, i am **'+Client.user.tag+"** support me and invite me
         .setColor("GREEN")
         .setFooter(`${message.guild.name} | ${message.guild.id} - ${message.id}`, message.guild.iconURL({dynamic: true}))
         .addField(`${message.content}`,`[Bot Invite](https://discord.com/api/oauth2/authorize?client_id=813498240477560834&permissions=8&scope=bot) | [Support](https://discord.gg/rys9xBgF3q)`)
-
 
         let adminembed = new Discord.MessageEmbed()
         .setThumbnail(message.author.displayAvatarURL({dynamic: true}))
@@ -424,14 +433,6 @@ message.channel.send('Hey, i am **'+Client.user.tag+"** support me and invite me
         .setColor('RED')
         .addField('**Upload Failed**',`**${message.author.tag}** at **${message.guild.name}** *you can't sent **images** here*`)
         
-                        
-        
-
-        
-        
-        
-    
-
         if(!message.referenceIsNull(message.referenced_message))
         {
             ownerembed.addField(`*replys to* ${message.referenced_message.embeds[0].description}`, `${message.referenced_message.embeds[0].fields[0].name}`);
@@ -442,9 +443,6 @@ message.channel.send('Hey, i am **'+Client.user.tag+"** support me and invite me
             lengthmessage.addField(`*replys to* ${message.referenced_message.embeds[0].description}`, `${message.referenced_message.embeds[0].fields[0].name}`)
         }
 
-        
-
-        
         if(message.embeds.length > 0)
                         { 
                             guild.channels.cache.get(serverstats[guild.id].globalchat).send(uploadfailed);
@@ -482,51 +480,7 @@ message.channel.send('Hey, i am **'+Client.user.tag+"** support me and invite me
         
                                                             }}
 
-                        }
-                    
-            
-
-            
-        
-                            
-    
-            
-
-          
-                            
-
-                           
-                            
-                                
-                    
-    
-    
-                            
-
-                            
-                            
-        
-            
-        
-            
-            
-                
-                
-    
-            
-
-
-        
-       
-
-        
-
-            
-            
-
-        
-        
-        )
+                        })
         message.delete()
         
       }
@@ -775,80 +729,12 @@ message.channel.send('Hey, i am **'+Client.user.tag+"** support me and invite me
 
         let displayroles;
 
-        if(roles.length < 1){
-            displayroles = "𝙉𝙤 𝙍𝙤𝙡𝙚𝙨"
-        }else{
-            if(roles.length < 20) {
-                displayroles= roles.join(' ')
-            } else {
-                if(roles.length >= 20){
-                    displayroles= roles.slice(18).join(' ')
-                } else {
-                    if(roles.length >= 30){
-                        displayroles= roles.slice(28).join(' ')
-                        
-                    } else {
-                        if(roles.length >= 40){
-                            displayroles= roles.slice(38).join(' ')
-                            
-                        } else {
-                            if(roles.length >= 50){
-                                displayroles= roles.slice(48).join(' ')
-                                
-                            } else {
-                                if(roles.length >= 60){
-                                    displayroles= roles.slice(58).join(' ')
-                                    
-                                } else {
-                                    if(roles.length >= 70){
-                                        displayroles= roles.slice(68).join(' ')
-                                        
-                                    } else {
-                                        if(roles.length >= 80){
-                                            displayroles= roles.slice(78).join(' ')
-                                            
-                                        } else {
-                                            if(roles.length >= 90){
-                                                displayroles= roles.slice(88).join(' ')
-                                                
-                                            } else {
-                                                if(roles.length >= 100){
-                                                    displayroles= roles.slice(98).join(' ')
-                                                    
-                                                } else {
-                                                    if(roles.length >= 110){
-                                                        displayroles= roles.slice(108).join(' ')
-                                                        
-                                                    } else {
-                                                        if(roles.length >= 120){
-                                                            displayroles= roles.slice(118).join(' ')
-                                                            
-                                                        } else {
-                                                            if(roles.length >= 130){
-                                                                displayroles= roles.slice(128).join(' ')
-                                                                
-                                                            } else {
-                                                                
-                                                                displayroles= roles.slice(138).join(' ')
-                                                                    
-                                                                
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }  
-
-            
+        if(roles.length = 0){
+            displayroles = "No Roles"
         }
-    
+
+        
+
             let server = {
                 logo: message.guild.iconURL({dynamic: true}),
                 name: message.guild.name,
@@ -916,7 +802,7 @@ message.channel.send('Hey, i am **'+Client.user.tag+"** support me and invite me
         if(!message.member.hasPermission("ADMINISTRATOR")) return message.reply("You need **ADMINISTRATPR** rights.");
 
         if(!serverstats[message.guild.id].welcomemsg){
-            serverstats[message.guild.id].welcomemsg = undefined
+            serverstats[message.guild.id].welcomemsg = null
         }
 
         let newmsg = message.content.split(" ").slice(1).join(" ");
@@ -935,14 +821,11 @@ message.channel.send('Hey, i am **'+Client.user.tag+"** support me and invite me
         })
     }
 
-
-    // Set Welcome und Leave 
-
     if(message.content.startsWith(prefix+"setwelcome")){
         if(!message.member.hasPermission("ADMINISTRATOR")) return message.reply("You need **ADMINISTRATPR** rights.");
 
         if(!serverstats[message.guild.id].welcomechannel){
-            serverstats[message.guild.id].welcomechannel = undefined
+            serverstats[message.guild.id].welcomechannel = null
         }
 
         let newcwelcome = message.mentions.channels.first();
@@ -964,7 +847,7 @@ message.channel.send('Hey, i am **'+Client.user.tag+"** support me and invite me
         if(!message.member.hasPermission("MANAGE_CHANNELS")) return message.reply("You need **MANAGE CHANNELS** rights.");
 
         if(!serverstats[message.guild.id].suprole){
-            serverstats[message.guild.id].suprole = undefined
+            serverstats[message.guild.id].suprole = null
         }
 
         let newsuprole = message.mentions.roles.first();
@@ -987,7 +870,7 @@ message.channel.send('Hey, i am **'+Client.user.tag+"** support me and invite me
         if(!message.member.hasPermission("ADMINISTRATOR")) return message.reply("You need **ADMINISTRATPR** rights.");
 
         if(!serverstats[message.guild.id].leavechannel){
-            serverstats[message.guild.id].leavechannel = undefined
+            serverstats[message.guild.id].leavechannel = null
         }
 
         let newleave = message.mentions.channels.first();
@@ -1009,7 +892,7 @@ message.channel.send('Hey, i am **'+Client.user.tag+"** support me and invite me
     if(message.content.startsWith(prefix+"delleave")){
         if(!message.member.hasPermission("ADMINISTRATOR")) return message.reply("You need **ADMINISTRATPR** rights.");
         
-        serverstats[message.guild.id].leavechannel = undefined
+        serverstats[message.guild.id].leavechannel = null
 
         message.channel.send("<a:Loading:800341232870096938> Deleting ...").then(msg=>{
             msg.edit("Removed the leave channel. <a:flyingironman:842294044393996328>")
@@ -1017,7 +900,7 @@ message.channel.send('Hey, i am **'+Client.user.tag+"** support me and invite me
     }
 
     if(message.content.startsWith(prefix+"delwelcome")){
-        serverstats[message.guild.id].welcomechannel = undefined
+        serverstats[message.guild.id].welcomechannel = null
 
         message.channel.send("<a:Loading:800341232870096938> Deleting ...").then(msg=>{
             msg.edit("Removed the welcome channel. <a:flyingironman:842294044393996328>")
@@ -1048,7 +931,6 @@ message.channel.send('Hey, i am **'+Client.user.tag+"** support me and invite me
     /*if(message.content.startsWith(prefix+"ban")){
         const user = message.mentions.users.first(); // returns the user object if an user mention exists
         const banReason = message.slice(2).join(' '); // Reason of the ban (Everything behind the mention)
-
         if (!user) {
             
             if (user === message.author) return message.channel.send('You can\'t ban yourself'); // Check if the user mention or the entered userID is the message author himsmelf
@@ -1066,9 +948,6 @@ message.channel.send('Hey, i am **'+Client.user.tag+"** support me and invite me
     }
 }*/
     
-
-    
-    // Warn System
     if(message.content.startsWith(prefix+"warn")){
         let user = message.mentions.users.first();
         let grund = message.content.split(" ").slice(2).join(" ");
@@ -1154,7 +1033,7 @@ message.channel.send('Hey, i am **'+Client.user.tag+"** support me and invite me
             message.channel.send(err)
         })
     }
-// Clear 
+
 if(message.content.startsWith(prefix+"clear")){
      if(!message.member.hasPermission('MANAGE_MESSAGES')) return message.channel.send(':x: You need ``manage messages`` for that!')
       const args = message.content.split(' ').slice(1); 
@@ -1248,7 +1127,6 @@ if(message.content.startsWith(`${prefix}howsimp`)){
         message.channel.send(how2simpembed)
     }   
 }
-// Help
 
 if(message.content.toLowerCase() === `${prefix}help`){
         let helpembed = new Discord.MessageEmbed()
@@ -1324,10 +1202,6 @@ if(message.content.toLowerCase() === `${prefix}help`){
 
     }
     
-
-
-
-
     if(message.content.startsWith(prefix+"ping")){
         message.channel.send("<a:Loading:800341232870096938> Pinging...").then(resultmessage=>{
             var ping = resultmessage.createdTimestamp - message.createdTimestamp
@@ -1348,10 +1222,7 @@ if(message.content.toLowerCase() === `${prefix}help`){
 })
 
 
-
-
-
-Client.on("guildCreate", (guild) =>{
+Client.on("guildCreate", async(guild) =>{
     let channelToSendTo;
 
     guild.channels.cache.forEach((channel) =>{
@@ -1380,17 +1251,7 @@ Client.on("guildCreate", (guild) =>{
         if(error){
             console.log(error)
         }
-
-    
-        
-
-
 });
-
-
-
-
-
 
 Client.on("messageReactionAdd", async (reaction, user)=>{
 
@@ -1401,16 +1262,12 @@ Client.on("messageReactionAdd", async (reaction, user)=>{
         reaction.users.remove(user);
        
         
-        
-
         let category = reaction.message.guild.channels.cache.find(ct=>ct.name === "tickets" && ct.type === "category");
         
 
         if(!category) await reaction.message.guild.channels.create("tickets", {type:"category"}).then(cat=>category = cat);
 
         
-
-
         reaction.message.guild.channels.create(`ticket-${user.username}`,{type:"text"}).then(ch=>{
             ch.setParent(category);
             ch.overwritePermissions([
@@ -1450,7 +1307,7 @@ Client.on("ready", () =>{
 
     let statuse = [
       "𝙖!𝙝𝙚𝙡𝙥 | "+Client.guilds.cache.size+" 𝙨𝙚𝙧𝙫𝙚𝙧𝙨",
-      `𝙐𝙥𝙙𝙖𝙩𝙚-𝙑𝙚𝙧𝙨𝙞𝙤𝙣 𝟭.𝟮`,
+      `in Sommer Holidays`,
       `𝙬𝙞𝙩𝙝 𝙅𝙤𝙝𝙣 𝙒𝙖𝙡𝙠𝙚𝙧😏`
       ]
   
